@@ -3,7 +3,6 @@ package scalers
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	driver "github.com/arangodb/go-driver"
 	"github.com/arangodb/go-driver/http"
@@ -32,7 +31,7 @@ type dbResult struct {
 type arangoDBMetadata struct {
 	// Specify arangoDB server endpoint URL or comma separated URL Endpoints of all the coordinators.
 	// +required
-	Endpoints string `keda:"name=endpoints, order=authParams;triggerMetadata"`
+	Endpoints []string `keda:"name=endpoints, order=authParams;triggerMetadata"`
 	// Authentication parameters for connecting to the database
 	// +required
 	ArangoDBAuth *authentication.Config `keda:"optional"`
@@ -42,7 +41,7 @@ type arangoDBMetadata struct {
 
 	// The name of the database to be queried.
 	// +required
-	dbName string
+	DBName string `keda:"name=dbName, order=authParams;triggerMetadata"`
 	// The name of the Collection to be queried.
 	// +required
 	Collection string `keda:"name=collection, order=triggerMetadata"`
@@ -57,7 +56,7 @@ type arangoDBMetadata struct {
 	ActivationQueryValue float64 `keda:"name=activationQueryValue, order=triggerMetadata, default=0"`
 	// Specify whether to verify the server's certificate chain and host name.
 	// +optional
-	UnsafeSsl bool `keda:"name=unsafeSsl, order=triggerMetadata ,default=false"`
+	UnsafeSsl bool `keda:"name=unsafeSsl, order=triggerMetadata, default=false"`
 	// Specify the max size of the active connection pool.
 	// +optional
 	ConnectionLimit int64 `keda:"name=connectionLimit, order=triggerMetadata, optional"`
@@ -96,7 +95,7 @@ func getNewArangoDBClient(meta *arangoDBMetadata) (driver.Client, error) {
 	var auth driver.Authentication
 
 	conn, err := http.NewConnection(http.ConnectionConfig{
-		Endpoints: strings.Split(meta.Endpoints, ","),
+		Endpoints: meta.Endpoints,
 		TLSConfig: util.CreateTLSClientConfig(meta.UnsafeSsl),
 	})
 	if err != nil {
@@ -137,12 +136,6 @@ func parseArangoDBMetadata(config *scalersconfig.ScalerConfig) (*arangoDBMetadat
 		return nil, fmt.Errorf("no QueryValue given")
 	}
 
-	dbName, err := GetFromAuthOrMeta(config, "dbName")
-	if err != nil {
-		return nil, err
-	}
-	meta.dbName = dbName
-
 	return meta, nil
 }
 
@@ -152,18 +145,18 @@ func (s *arangoDBScaler) Close(_ context.Context) error {
 }
 
 func (s *arangoDBScaler) getQueryResult(ctx context.Context) (float64, error) {
-	dbExists, err := s.client.DatabaseExists(ctx, s.metadata.dbName)
+	dbExists, err := s.client.DatabaseExists(ctx, s.metadata.DBName)
 	if err != nil {
-		return -1, fmt.Errorf("failed to check if %s database exists, %w", s.metadata.dbName, err)
+		return -1, fmt.Errorf("failed to check if %s database exists, %w", s.metadata.DBName, err)
 	}
 
 	if !dbExists {
-		return -1, fmt.Errorf("%s database not found", s.metadata.dbName)
+		return -1, fmt.Errorf("%s database not found", s.metadata.DBName)
 	}
 
-	db, err := s.client.Database(ctx, s.metadata.dbName)
+	db, err := s.client.Database(ctx, s.metadata.DBName)
 	if err != nil {
-		return -1, fmt.Errorf("failed to connect to %s db, %w", s.metadata.dbName, err)
+		return -1, fmt.Errorf("failed to connect to %s db, %w", s.metadata.DBName, err)
 	}
 
 	collectionExists, err := db.CollectionExists(ctx, s.metadata.Collection)
@@ -172,7 +165,7 @@ func (s *arangoDBScaler) getQueryResult(ctx context.Context) (float64, error) {
 	}
 
 	if !collectionExists {
-		return -1, fmt.Errorf("%s collection not found in %s database", s.metadata.Collection, s.metadata.dbName)
+		return -1, fmt.Errorf("%s collection not found in %s database", s.metadata.Collection, s.metadata.DBName)
 	}
 
 	ctx = driver.WithQueryCount(ctx)
