@@ -11,10 +11,10 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"k8s.io/client-go/kubernetes"
 
 	. "github.com/kedacore/keda/v2/tests/helper"
+	"github.com/kedacore/keda/v2/tests/helper/require"
 	. "github.com/kedacore/keda/v2/tests/scalers/rabbitmq"
 )
 

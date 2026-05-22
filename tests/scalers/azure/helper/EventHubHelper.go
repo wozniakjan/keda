@@ -15,9 +15,9 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azeventhubs/v2"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/eventhub/armeventhub"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/kedacore/keda/v2/tests/helper"
+	"github.com/kedacore/keda/v2/tests/helper/require"
 )
 
 type EventHubHelper struct {

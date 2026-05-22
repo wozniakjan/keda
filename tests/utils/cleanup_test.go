@@ -7,9 +7,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	. "github.com/kedacore/keda/v2/tests/helper"
+	"github.com/kedacore/keda/v2/tests/helper/require"
 	"github.com/kedacore/keda/v2/tests/utils/helper"
 )
 

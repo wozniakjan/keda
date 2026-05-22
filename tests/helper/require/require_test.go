@@ -32,8 +32,8 @@ func TestHookFiresOnFailure(t *testing.T) {
 	t.Cleanup(func() { khelperrequire.SetOnFailure(nil) })
 
 	var (
-		fired atomic.Int32
-		gotT  khelperrequire.TestingT
+		fired  atomic.Int32
+		gotT   khelperrequire.TestingT
 		gotMsg string
 	)
 	khelperrequire.SetOnFailure(func(tt khelperrequire.TestingT, msg string) {

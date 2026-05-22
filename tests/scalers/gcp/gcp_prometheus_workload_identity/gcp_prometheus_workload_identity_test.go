@@ -11,9 +11,9 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	. "github.com/kedacore/keda/v2/tests/helper"
+	"github.com/kedacore/keda/v2/tests/helper/require"
 )
 
 // Load environment variables from .env file

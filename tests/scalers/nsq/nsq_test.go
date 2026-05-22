@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/stretchr/testify/require"
 	"k8s.io/client-go/kubernetes"
 
 	. "github.com/kedacore/keda/v2/tests/helper"
+	"github.com/kedacore/keda/v2/tests/helper/require"
 )
 
 var _ = godotenv.Load("../../.env")

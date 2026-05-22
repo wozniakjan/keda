@@ -12,7 +12,8 @@ import (
 	containers "github.com/gophercloud/gophercloud/openstack/objectstorage/v1/containers"
 	objects "github.com/gophercloud/gophercloud/openstack/objectstorage/v1/objects"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+
+	"github.com/kedacore/keda/v2/tests/helper/require"
 )
 
 func CreateClient(t *testing.T, authURL, userID, password, projectID string) *gophercloud.ServiceClient {

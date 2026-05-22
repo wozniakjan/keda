@@ -29,7 +29,6 @@ import (
 	"github.com/joho/godotenv"
 	prommodel "github.com/prometheus/client_model/go"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	autoscalingv2 "k8s.io/api/autoscaling/v2"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -46,6 +45,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 
 	"github.com/kedacore/keda/v2/pkg/generated/clientset/versioned/typed/keda/v1alpha1"
+	"github.com/kedacore/keda/v2/tests/helper/require"
 )
 
 const (
