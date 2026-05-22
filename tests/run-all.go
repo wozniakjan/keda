@@ -347,7 +347,33 @@ func evaluateExecution(testResults []TestResult) int {
 		}
 	}
 
+	dumpResults(passSummary, failSummary)
 	return exitCode
+}
+
+// dumpResults writes the summary of passed and failed tests to files in a directory specified by E2E_RESULTS_DIR environment variable if specified.
+func dumpResults(passSummary []string, failSummary []string) {
+	e2eDir := os.Getenv("E2E_RESULTS_DIR")
+	if e2eDir == "" {
+		return
+	}
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		fmt.Printf("WARN: cannot create results dir %s: %v\n", dir, err)
+		return
+	}
+
+	passFile := "passed.txt"
+	failFile := "failed.txt"
+
+	passes := strings.Join(passSummary, "\n")
+	if err := os.WriteFile(filepath.Join(e2eDir, passFile), []byte(passes), 0o644); err != nil {
+		fmt.Printf("WARN: cannot write %s: %v\n", filepath.Join(e2eDir, passFile), err)
+	}
+
+	failures := strings.Join(failSummary, "\n")
+	if err := os.WriteFile(filepath.Join(e2eDir, failFile), []byte(failures), 0o644); err != nil {
+		fmt.Printf("WARN: cannot write %s: %v\n", filepath.Join(e2eDir, failFile), err)
+	}
 }
 
 // numberToWord converts input integer (0-20) to corresponding word (zero-twenty)
